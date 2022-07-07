@@ -1,18 +1,19 @@
-const CatchAsyncErrors = require('../middlewares/CatchAsyncErrors');
-const ErrorHandler = require('../utils/ErrorHandler');
-
+const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
+const ErrorHandler = require("../utils/ErrorHandler");
+const Course = require("../models/course.model");
 /**
  * @desc   Get all courses
  * @route  GET /api/v1/course/get-courses
  * @access public
  * @returns {object}
  **/
-exports.getCourses = CatchAsyncErrors(async (req, res, next) => {
+exports.getCourses = CatchAsyncErrors(
+  async (req, res, next) => {
     return res.status(200).json({
-        success: true,
-        data: 'Get Courses Route Working 🚀',
+      success: true,
+      data: "Get Courses Route Working 🚀",
     });
-    } // end of getCourses
+  } // end of getCourses
 );
 
 /**
@@ -23,10 +24,11 @@ exports.getCourses = CatchAsyncErrors(async (req, res, next) => {
  * @param {string} id
  * @returns {object}
  **/
-exports.getCourseDetails = CatchAsyncErrors(async (req, res, next) => {
+exports.getCourseDetails = CatchAsyncErrors(
+  async (req, res, next) => {
     return res.status(200).json({
-        success: true,
-        data: 'Get Course Details Route Working 🚀',
+      success: true,
+      data: "Get Course Details Route Working 🚀",
     });
-    } // end of getCourseDetails
+  } // end of getCourseDetails
 );

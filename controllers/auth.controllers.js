@@ -1,18 +1,6 @@
-const CatchAsyncErrors = require('../middlewares/CatchAsyncErrors');
-const ErrorHandler = require('../utils/ErrorHandler');
-
-
-/**
- * @desc   Login user
- * @route  POST api/v1/auth/login
- * @access public
- **/
-exports.login = CatchAsyncErrors(async (req, res, next) => {
-   return res.status(200).json({
-    success: true,
-    data: 'Login Route Working 🚀',
-  });
-})
+const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
+const ErrorHandler = require("../utils/ErrorHandler");
+const User = require("../models/user.model");
 
 /**
  * @desc   Register user
@@ -20,12 +8,23 @@ exports.login = CatchAsyncErrors(async (req, res, next) => {
  * @access public
  **/
 exports.register = CatchAsyncErrors(async (req, res, next) => {
-    return res.status(200).json({
-     success: true,
-     data: 'Register Route Working 🚀',
-      });
-    });
+  const { email, password } = req.body.data;
 
+  if (!email) {
+    return next(new ErrorHandler("Please enter your email", 400));
+  }
+  // save user to database
+  const userSaved = await User.create({
+    email: email,
+    password: password,
+    ...req.body.data,
+  });
+
+  return res.status(200).json({
+    success: true,
+    data: userSaved,
+  });
+});
 
 /**
  * @desc   Google sign in
@@ -33,53 +32,74 @@ exports.register = CatchAsyncErrors(async (req, res, next) => {
  * @access public
  **/
 exports.googleLogin = CatchAsyncErrors(async (req, res, next) => {
+  const FirebaseObj = req.body.data;
+  const { email } = FirebaseObj;
+  // check if already exists
+  const user = await User.findOne({ email: email });
+  if (user) {
     return res.status(200).json({
-     success: true,
-     data: 'Google Login Route Working 🚀',
-      });
-    }
-  );
-
-  /**
-   * @desc   Facebook sign in
-   * @route  POST api/v1/auth/facebook
-   * @access public
-   **/
-  exports.facebookLogin = CatchAsyncErrors(async (req, res, next) => {
-    return res.status(200).json({
-     success: true,
-     data: 'Facebook Login Route Working 🚀',
-      });
-    } 
-  );
-
-  /**
-   * @desc   Forgot password
-   * @route  POST api/v1/auth/forgot-password
-   * @access public
-   **/
-  exports.forgotPassword = CatchAsyncErrors(async (req, res, next) => {
-    return res.status(200).json({
-     success: true,
-     data: 'Forgot Password Route Working 🚀',
-      });
-    }
-  );
-
-  /**
-   * @desc   Reset password
-   * @route  POST api/v1/auth/reset-password
-   * @access public
-   * @param  {string} token
-   * @param  {string} password
-   * @param  {string} confirmPassword
-   * @return {object}
-   * @throws {object}
-   * @throws {string}
-   **/
-  exports.resetPassword = CatchAsyncErrors(async (req, res, next) => {
-    return res.status(200).json({
-     success: true,
-     data: 'Reset Password Route Working 🚀',
-      });
+      success: true,
+      data: user,
     });
+  }
+  // save user to database
+  const userSaved = await User.create({
+    email: email,
+    ...FirebaseObj,
+  });
+
+  return res.status(200).json({
+    success: true,
+    data: userSaved,
+  });
+});
+
+/**
+ * @desc   Facebook sign in
+ * @route  POST api/v1/auth/facebook
+ * @access public
+ **/
+exports.facebookLogin = CatchAsyncErrors(async (req, res, next) => {
+  const FirebaseObj = req.body.data;
+  const { email } = FirebaseObj;
+  // check if already exists
+  const user = await User.findOne({ email: email });
+  if (user) {
+    return res.status(200).json({
+      success: true,
+      data: user,
+    });
+  }
+  // save user to database
+  const userSaved = await User.create({
+    email: email,
+    ...FirebaseObj,
+  });
+
+  return res.status(200).json({
+    success: true,
+    data: userSaved,
+  });
+});
+
+/**
+ * @desc   Forgot password -> it actually updates password
+ * @route  POST api/v1/auth/forgot-password
+ * @access public
+ **/
+exports.forgotPassword = CatchAsyncErrors(async (req, res, next) => {
+  const { email, password } = req.body.data;
+  // update password
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  user.password = password;
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    data: user,
+  });
+});

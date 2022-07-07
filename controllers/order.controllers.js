@@ -1,6 +1,6 @@
-const CatchAsyncErrors = require('../middlewares/CatchAsyncErrors');
-const ErrorHandler = require('../utils/ErrorHandler');
-
+const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
+const ErrorHandler = require("../utils/ErrorHandler");
+const Order = require("../models/order.model");
 
 /**
  * @desc   create new order
@@ -8,11 +8,17 @@ const ErrorHandler = require('../utils/ErrorHandler');
  * @access public
  * @returns {object}
  **/
-exports.createOrder = CatchAsyncErrors(async (req, res, next) => {
-    return res.status(200).json({
-        success: true,
-        data: 'Create Order Route Working 🚀',
+exports.createOrder = CatchAsyncErrors(
+  async (req, res, next) => {
+    const { user } = req.body.data;
+    const order = await Order.create({
+      user: user,
+      ...req.body.data,
     });
-    } // end of createOrder
-);
 
+    return res.status(200).json({
+      success: true,
+      data: order,
+    });
+  } // end of createOrder
+);

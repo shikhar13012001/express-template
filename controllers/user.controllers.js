@@ -1,19 +1,20 @@
-const CatchAsyncErrors = require('../middlewares/CatchAsyncErrors');
-const ErrorHandler = require('../utils/ErrorHandler');
+const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
+const ErrorHandler = require("../utils/ErrorHandler");
 
 /**
  * @desc   get-realtime-notifications
  * @route  GET /api/v1/user/get-realtime-notifications/:id
- *  @access public
+ * @access public
  * @returns {object}
  * @param {string} id
  **/
-exports.getRealtimeNotifications = CatchAsyncErrors(async (req, res, next) => {
+exports.getRealtimeNotifications = CatchAsyncErrors(
+  async (req, res, next) => {
     return res.status(200).json({
-        success: true,
-        data: 'Get Realtime Notifications Route Working 🚀',
+      success: true,
+      data: "Get Realtime Notifications Route Working 🚀",
     });
-    } // end of getRealtimeNotifications
+  } // end of getRealtimeNotifications
 );
 
 /**
@@ -24,10 +25,11 @@ exports.getRealtimeNotifications = CatchAsyncErrors(async (req, res, next) => {
  * @param {string} id
  * @returns {object}
  **/
-exports.getUserDetails = CatchAsyncErrors(async (req, res, next) => {
+exports.getUserDetails = CatchAsyncErrors(
+  async (req, res, next) => {
     return res.status(200).json({
-        success: true,
-        data: 'Get User Details Route Working 🚀',
+      success: true,
+      data: "Get User Details Route Working 🚀",
     });
-    } // end of getUserDetails
+  } // end of getUserDetails
 );
