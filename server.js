@@ -9,6 +9,7 @@ const authRouter = require("./routers/auth.routes");
 const userRouter = require("./routers/user.routes");
 const orderRouter = require("./routers/order.routes");
 const courseRouter = require("./routers/course.routes");
+const contactRouter = require("./routers/contact.routes");
 const app = express();
 const connectToDb = require("./config/db");
 const cors = require("cors");
@@ -52,6 +53,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/course", courseRouter);
+app.use("/api/v1/contact", contactRouter);
 
 // error middleware
 

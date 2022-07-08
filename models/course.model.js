@@ -2,18 +2,32 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const CourseSchema = new Schema(
   {
-    name: {
+    title: {
       type: String,
-    },
-    description: {
-      type: String,
+      required: [true, "Title is required"],
     },
     price: {
       type: Number,
+      required: [true, "Price is required"],
     },
-    duration: {
-      type: Number,
+    description: {
+      type: String,
+      required: [true, "Description is required"],
     },
+    levels: {
+      type: [
+        {
+          level: {
+            type: Number,
+          },
+          title: { type: String },
+          description: { type: String },
+        },
+      ],
+    },
+    author: {
+      type: String,
+    }
   },
   { timestamps: true, strict: false }
 );

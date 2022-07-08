@@ -1,4 +1,5 @@
 {
   "endOfLine": "lf",
-  "tabSize": 4
+  "tabSize": 4,
+  "insertSpaces": true
 }
