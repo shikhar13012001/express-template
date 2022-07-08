@@ -1,6 +1,33 @@
 const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const Course = require("../models/course.model");
+
+/**
+ * @description - Create a new course
+ * @param {object} req - The request object
+ * @param {object} res - The response object
+ * @returns {object} - The response object
+ * @throws {error} - The error object
+ * @memberof CourseController
+ * @route POST /api/v1/courses/create
+ */
+exports.createCourse = CatchAsyncErrors(async (req, res) => {
+  const { title, price, description, levels,author} = req.body.data;
+  const newCourse = await Course.create({
+    title,
+    price,
+    description,
+    levels,
+    author
+  });
+  return res.status(201).json({
+    success: true,
+    data: newCourse,
+  });
+
+}
+);
+
 /**
  * @desc   Get all courses
  * @route  GET /api/v1/course/get-courses
