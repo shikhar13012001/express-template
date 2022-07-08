@@ -18,7 +18,7 @@ const CourseSchema = new Schema(
       type: [
         {
           level: {
-            type: Number,
+            type:String,
           },
           title: { type: String },
           description: { type: String },
