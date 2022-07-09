@@ -15,7 +15,7 @@ const CourseSchema = new Schema(
         url:{
           type: String,
         },
-        videoID:{
+        videoId:{
           type: String,
         }
        }
