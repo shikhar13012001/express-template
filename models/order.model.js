@@ -2,25 +2,25 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const OrderSchema = new Schema(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: [true, "User is required"],
+     
+    userId: { type: String, required: [true, "User ID is required"] },
+    orderId: { type: String, required: [true, "Order ID is required"] },
+    billingDetails: {
+      agreeTerms: { type: Boolean },
+      countryOrRegion: { type: String },
+      state: { type: String },
+      houseNumber: { type: String },
+      streetAddress: { type: String },
+      suburb: { type: String },
+      postcode: { type: String }, // why postcode is string?
+      subscribeStatus: { type: Boolean },
     },
-    course: {
-      type: Schema.Types.ObjectId,
-      ref: "Course",
-      required: [true, "Course is required"],
+    orderDetails: {
+      course: { type: String },
+      quantity: { type: Number },
+      totalPrice: { type: Number },
     },
-    price: {
-      type: Number,
-    },
-    quantity: {
-      type: Number,
-    },
-    total_price: {
-      type: Number,
-    },
+    userDetails:{type: Schema.Types.ObjectId, ref: "User"}
   },
   { timestamps: true, strict: false }
 );

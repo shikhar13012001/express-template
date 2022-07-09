@@ -12,17 +12,10 @@ const Course = require("../models/course.model");
  * @route POST /api/v1/courses/create
  */
 exports.createCourse = CatchAsyncErrors(async (req, res) => {
-  const { title, price, description, levels,author} = req.body.data;
-  const newCourse = await Course.create({
-    title,
-    price,
-    description,
-    levels,
-    author
-  });
+  
   return res.status(201).json({
     success: true,
-    data: newCourse,
+    data: 'Course created successfully 🚀',
   });
 
 }

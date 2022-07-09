@@ -10,9 +10,12 @@ const Order = require("../models/order.model");
  **/
 exports.createOrder = CatchAsyncErrors(
   async (req, res, next) => {
-    const { user } = req.body.data;
+    const { userId, orderId } = req.body.data;
+    if (!userId || !orderId) {
+      return next(new ErrorHandler(400, "User ID and Order ID are required"));
+    }
     const order = await Order.create({
-      user: user,
+      userId: userId,
       ...req.body.data,
     });
 
@@ -21,4 +24,26 @@ exports.createOrder = CatchAsyncErrors(
       data: order,
     });
   } // end of createOrder
+);
+
+/**
+ * @desc   get all orders
+ * @route  GET /api/v1/order/get-orders/:userId
+ * @access public
+ * @returns {object}
+ * @param {string} userId
+ **/
+
+exports.getOrders = CatchAsyncErrors(
+  async (req, res, next) => {
+    const { userId } = req.params;
+    if (!userId) {
+      return next(new ErrorHandler(400, "User ID is required"));
+    }
+    const orders = await Order.find({ userId: userId }).populate("userDetails");
+    return res.status(200).json({
+      success: true,
+      data: orders,
+    });
+  } // end of getOrders
 );

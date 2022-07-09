@@ -7,12 +7,12 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    caregiverFirstName: {
+    caregiverFName: {
       type: String,
       minlength: [3, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
     },
-    caregiverLastName: {
+    caregiverLName: {
       type: String,
       minlength: [3, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
@@ -24,26 +24,22 @@ const userSchema = new Schema(
       maxlength: [255, "Email must be less than 255 characters long"],
       unique: true,
     },
-    password: {
-      type: String,
-      minlength: [3, "Password must be at least 3 characters long"],
-      maxlength: [255, "Password must be less than 255 characters long"],
-    },
+  
     phoneNumber: {
       type: String,
     },
-    childFirstName: {
+    childFName: {
       type: String,
       minlength: [3, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
     },
-    childLastName: {
+    childLName: {
       type: String,
 
       minlength: [3, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
     },
-    childBirthDate: {
+    childDOB: {
       type: Date,
     },
    },

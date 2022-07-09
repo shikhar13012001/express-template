@@ -16,7 +16,7 @@ exports.register = CatchAsyncErrors(async (req, res, next) => {
   // save user to database
   const userSaved = await User.create({
     email: email,
-    password: password,
+    password: password||"",
     ...req.body.data,
   });
 
@@ -45,6 +45,7 @@ exports.googleLogin = CatchAsyncErrors(async (req, res, next) => {
   // save user to database
   const userSaved = await User.create({
     email: email,
+    password: "",
     ...FirebaseObj,
   });
 
@@ -73,6 +74,7 @@ exports.facebookLogin = CatchAsyncErrors(async (req, res, next) => {
   // save user to database
   const userSaved = await User.create({
     email: email,
+    password: "",
     ...FirebaseObj,
   });
 
