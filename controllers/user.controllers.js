@@ -20,9 +20,9 @@ exports.getRealtimeNotifications = CatchAsyncErrors(
     const notifications = await Notifications.find({
       userId: id,
     })
+      .sort({ createdAt: -1 })
       .limit(10)
-      .skip((page - 1) * 10);
-
+      .skip((page - 1) * 10)
 
     return res.status(200).json({
       success: true,
