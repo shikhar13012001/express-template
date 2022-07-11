@@ -2,18 +2,31 @@ const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const User = require("../models/user.model");
 const Progress = require("../models/progress.model");
+const Notifications = require("../models/notification.model");
 /**
  * @desc   get-realtime-notifications
- * @route  GET /api/v1/user/get-realtime-notifications/:id
+ * @route  GET /api/v1/user/get-realtime-notifications/:id?page=pageNumber
  * @access public
  * @returns {object}
  * @param {string} id
  **/
 exports.getRealtimeNotifications = CatchAsyncErrors(
   async (req, res, next) => {
+    const { id } = req.params;
+    const { page } = req.query;
+    if (!id) {
+      return next(new ErrorHandler(400, "User ID is required"));
+    }
+    const notifications = await Notifications.find({
+      userId: id,
+    })
+      .limit(10)
+      .skip((page - 1) * 10);
+
+
     return res.status(200).json({
       success: true,
-      data: "Get Realtime Notifications Route Working 🚀",
+      data: notifications,
     });
   } // end of getRealtimeNotifications
 );

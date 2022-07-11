@@ -12,14 +12,18 @@ const Course = require("../models/course.model");
  * @route POST /api/v1/courses/create
  */
 exports.createCourse = CatchAsyncErrors(async (req, res) => {
-  
-  return res.status(201).json({
-    success: true,
-    data: 'Course created successfully 🚀',
+  const { course, courseId, videoLinks } = req.body.data;
+  const newCourse = await Course.create({
+    course,
+    courseId,
+    videoLinks,
   });
 
-}
-);
+  return res.status(201).json({
+    success: true,
+    data: newCourse,
+  });
+});
 
 /**
  * @desc   Get all courses
@@ -29,9 +33,10 @@ exports.createCourse = CatchAsyncErrors(async (req, res) => {
  **/
 exports.getCourses = CatchAsyncErrors(
   async (req, res, next) => {
+    const courses = await Course.find();
     return res.status(200).json({
       success: true,
-      data: "Get Courses Route Working 🚀",
+      data: courses,
     });
   } // end of getCourses
 );

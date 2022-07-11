@@ -1,7 +1,7 @@
 const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const Order = require("../models/order.model");
-
+const Notifications = require("../models/notification.model");
 /**
  * @desc   create new order
  * @route  POST /api/v1/order/create-order
@@ -17,6 +17,13 @@ exports.createOrder = CatchAsyncErrors(
     const order = await Order.create({
       userId: userId,
       ...req.body.data,
+    });
+    // add to notifications
+    await Notifications.create({
+      userId: userId,
+      orderId: orderId,
+      type: "order",
+      notification: "You have purchased new course " + order.orderDetails.course,
     });
 
     return res.status(200).json({

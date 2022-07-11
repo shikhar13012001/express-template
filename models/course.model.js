@@ -2,25 +2,25 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const CourseSchema = new Schema(
   {
-    course:{
+    course: {
       type: String,
     },
-    courseId:{
+    courseId: {
       type: String,
     },
 
-    videoLinks:{
-      type:[
-       {
-        url:{
-          type: String,
+    videoLinks: {
+      type: [
+        {
+          url: {
+            type: String,
+          },
+          videoId: {
+            type: String,
+          },
         },
-        videoId:{
-          type: String,
-        }
-       }
       ],
-    }
+    },
   },
   { timestamps: true, strict: false }
 );
