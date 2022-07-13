@@ -3,6 +3,35 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const User = require("../models/user.model");
 const Course = require("../models/course.model");
 const Progress = require("../models/progress.model");
+
+/**
+ * @desc Login user
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @route POST /api/v1/auth/login
+ * @access public
+ * @returns {Object}
+ **/
+exports.login = CatchAsyncErrors(
+  async (req, res, next) => {
+    const { email, password } = req.body;
+    if (!email) {
+      return next(new ErrorHandler(400, "Email is required"));
+    }
+   // get user
+    const user = await User.findOne({ email });
+    res.status(200).json({
+      success: true,
+      data:user
+    });
+  } // end of login
+);
+
+
+
+
+
+
 /**
  * @desc   Register user
  * @route  POST api/v1/auth/register

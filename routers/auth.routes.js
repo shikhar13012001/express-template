@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const authController = require("../controllers/auth.controllers");
-
+// Login user route
+router.route("/login").post(authController.login);
 // register route
 router.route("/register").post(authController.register);
 // google login routes
@@ -11,4 +12,3 @@ router.route("/facebook").post(authController.facebookLogin);
 router.route("/forgot-password").post(authController.forgotPassword);
 
 module.exports = router;
- 
