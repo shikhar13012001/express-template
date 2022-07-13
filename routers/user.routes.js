@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const userController = require("../controllers/user.controllers");
 
-// Get_realtime_notifications
+// Get_realtime_notification
 router
   .route("/get-realtime-notifications/:id")
   .get(userController.getRealtimeNotifications);
