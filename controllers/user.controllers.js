@@ -3,6 +3,7 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const User = require("../models/user.model");
 const Progress = require("../models/progress.model");
 const Notifications = require("../models/notification.model");
+const Course = require("../models/course.model");
 /**
  * @desc   get-realtime-notifications
  * @route  GET /api/v1/user/get-realtime-notifications/:id?page=pageNumber
@@ -22,7 +23,7 @@ exports.getRealtimeNotifications = CatchAsyncErrors(
     })
       .sort({ createdAt: -1 })
       .limit(10)
-      .skip((page - 1) * 10)
+      .skip((page - 1) * 10);
 
     return res.status(200).json({
       success: true,
@@ -63,28 +64,85 @@ exports.getUserDetails = CatchAsyncErrors(
 
 exports.updateProgress = CatchAsyncErrors(
   async (req, res, next) => {
-    const { courseId, videoId, userId } = req.body.data;
+    const { courseId, videoId, userId, week } = req.body.data;
     // update or create progress
     // find if videoId exists in progress
-    let newProgress;
-    newProgress = await Progress.findOne({
+    //find progress for user
+    const isProgress = await Progress.findOne({
       userId: userId,
-      "progress.videoId": videoId,
+      "progress.courseId": courseId,
     });
-    if (!newProgress) {
-      newProgress = await Progress.findOneAndUpdate(
+    let progress=isProgress;
+    if (!isProgress) {
+      //update progress for that course and weeks
+      progress = await Progress.findOneAndUpdate(
         { userId: userId },
         {
           $push: {
             progress: {
               courseId: courseId,
-              videoId: videoId,
+              videos: Array(52)
+                .fill(0)
+                .map((_, i) => {
+                  return {
+                    accessable: i == 0 ? true : false,
+                    week: i + 1,
+                    videosID: [],
+                  };
+                }),
             },
           },
-        },
-        { new: true, upsert: true, returnNewDocument: true }
+        }
       );
     }
+    //get videos lenght for that week with that course id from Course model
+    const videosLength = await Course.findOne(
+      {
+        courseId: courseId,
+        "videoLinks.week": week,
+      },
+      {
+        _id: 0,
+        "videoLinks.$": 1,
+      }
+    );
+    const isFull =
+      videosLength.videoLinks[0].videos.length ===
+      progress?.progress
+        ?.filter((t) => t.courseId === courseId)[0]
+        ?.videos?.filter((t) => t.week == week)[0]?.videosID?.length;
+    console.log(isFull);
+    console.log(progress);
+
+    const newProgress = await Progress.findOneAndUpdate(
+      {
+        userId: userId,
+      },
+      {
+        $push: {
+          "progress.$[doc1].videos.$[doc2].videosID": { videoId: videoId },
+        },
+        //set video to accessable
+        $set: {
+          "progress.$[doc1].videos.$[doc3].accessable": isFull,
+          "progress.$[doc1].videos.$[doc2].accessable": true,
+        },
+      },
+      {
+        arrayFilters: [
+          { "doc1.courseId": courseId },
+          {
+            "doc2.week": week,
+            "doc2.videosID.videoId": {
+              $ne: videoId,
+            },
+          },
+          { "doc3.week": week + 1 },
+        ],
+        new: true,
+      }
+    );
+
     return res.status(200).json({
       success: true,
       data: newProgress,

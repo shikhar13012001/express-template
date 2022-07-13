@@ -11,7 +11,8 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "faker": "^5.5.3",
-    "mongoose": "^6.4.3"
+    "mongoose": "^6.4.3",
+    "node-fetch": "^3.2.8"
   },
   "devDependencies": {
     "mocha": "^10.0.0",

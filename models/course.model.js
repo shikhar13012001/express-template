@@ -12,12 +12,15 @@ const CourseSchema = new Schema(
     videoLinks: {
       type: [
         {
-          url: {
-            type: String,
+          week: {
+            type: Number,
           },
-          videoId: {
-            type: String,
-          },
+          videos: [
+            {
+              youtubeLink: String,
+              vimeoLink: String,
+            },
+          ],
         },
       ],
     },

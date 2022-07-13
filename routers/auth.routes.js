@@ -11,3 +11,4 @@ router.route("/facebook").post(authController.facebookLogin);
 router.route("/forgot-password").post(authController.forgotPassword);
 
 module.exports = router;
+ 

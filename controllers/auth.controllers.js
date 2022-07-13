@@ -1,7 +1,8 @@
 const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const User = require("../models/user.model");
-
+const Course = require("../models/course.model");
+const Progress = require("../models/progress.model");
 /**
  * @desc   Register user
  * @route  POST api/v1/auth/register
@@ -16,8 +17,15 @@ exports.register = CatchAsyncErrors(async (req, res, next) => {
   // save user to database
   const userSaved = await User.create({
     email: email,
-    password: password||"",
+    password: password || "",
     ...req.body.data,
+  });
+  // create progress for user
+  // const courses = await Course.find({}, { _id: 0, courseId: 1, course: 1 });
+
+  await Progress.create({
+    userId: userSaved._id,
+    progress: []
   });
 
   return res.status(200).json({
