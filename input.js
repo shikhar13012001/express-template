@@ -1820,7 +1820,7 @@ const data=await fetch(`http://localhost:5000/api/v1/course/create-course`,{
   headers: {
     "Content-Type": "application/json",
   },
-  body: JSON.stringify({data:{...course3}}),
+  body: JSON.stringify({data:{...course1}}),
 })
 const res=await data.json();
 console.log(res)
