@@ -14,7 +14,7 @@ const Progress = require("../models/progress.model");
  **/
 exports.login = CatchAsyncErrors(
   async (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body.data;
     if (!email) {
       return next(new ErrorHandler(400, "Email is required"));
     }
