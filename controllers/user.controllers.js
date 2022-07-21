@@ -169,3 +169,33 @@ exports.getProgress = CatchAsyncErrors(
     });
   } // end of getProgress
 );
+
+
+/**
+ * @desc   update-user-details
+ * @route  PUT /api/v1/user/update-user-details
+ * @access public
+ * @returns {object}
+ * @param {string} id
+ * @returns {object}
+ * */
+exports.updateUserDetails = CatchAsyncErrors(
+  async (req, res, next) => {
+    const { id } = req.params; 
+    const user = await User.findById(id);
+    if (!user) {
+      return next(new ErrorHandler(404, "User not found"));
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        ...req.body.data
+      },
+      { new: true,returnNewDocument: true }
+    );
+    return res.status(200).json({
+      success: true,
+      data: updatedUser,
+    });
+  } // end of updateUserDetails
+);
