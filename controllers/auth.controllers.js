@@ -3,7 +3,7 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const User = require("../models/user.model");
 const Course = require("../models/course.model");
 const Progress = require("../models/progress.model");
-
+const bcrypt = require("bcrypt");
 /**
  * @desc Login user
  * @param {Object} req - Express request object
@@ -15,22 +15,26 @@ const Progress = require("../models/progress.model");
 exports.login = CatchAsyncErrors(
   async (req, res, next) => {
     const { email, password } = req.body.data;
-    if (!email) {
-      return next(new ErrorHandler(400, "Email is required"));
+    if (!email || !password) {
+      return next(new ErrorHandler(400, "Email and Password is required"));
     }
-   // get user
+    // get user
     const user = await User.findOne({ email });
+    if (!user) {
+      return next(new ErrorHandler(400, "Invalid email or password"));
+    }
+    // compare password with hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return next(new ErrorHandler(400, "Invalid email or password"));
+    }
+
     res.status(200).json({
       success: true,
-      data:user
+      data: user,
     });
   } // end of login
 );
-
-
-
-
-
 
 /**
  * @desc   Register user
@@ -40,8 +44,8 @@ exports.login = CatchAsyncErrors(
 exports.register = CatchAsyncErrors(async (req, res, next) => {
   const { email, password } = req.body.data;
 
-  if (!email) {
-    return next(new ErrorHandler("Please enter your email", 400));
+  if (!email || !password) {
+    return next(new ErrorHandler("Please enter your emaila and Password", 400));
   }
   // save user to database
   const userSaved = await User.create({
@@ -54,7 +58,7 @@ exports.register = CatchAsyncErrors(async (req, res, next) => {
 
   await Progress.create({
     userId: userSaved._id,
-    progress: []
+    progress: [],
   });
 
   return res.status(200).json({
@@ -82,8 +86,9 @@ exports.googleLogin = CatchAsyncErrors(async (req, res, next) => {
   // save user to database
   const userSaved = await User.create({
     email: email,
-    password: "",
+    password: FirebaseObj.user.uid || "",
     ...FirebaseObj,
+    isOAuth: true,
   });
 
   return res.status(200).json({
@@ -111,8 +116,9 @@ exports.facebookLogin = CatchAsyncErrors(async (req, res, next) => {
   // save user to database
   const userSaved = await User.create({
     email: email,
-    password: "",
+    password: FirebaseObj.user.uid || "",
     ...FirebaseObj,
+    isOAuth: true,
   });
 
   return res.status(200).json({
@@ -127,16 +133,23 @@ exports.facebookLogin = CatchAsyncErrors(async (req, res, next) => {
  * @access public
  **/
 exports.forgotPassword = CatchAsyncErrors(async (req, res, next) => {
-  const { email, password } = req.body.data;
+  const { userId, oldPassword, newPassword } = req.body.data;
   // update password
-  const user = await User.findOne({ email: email });
+  const user = await User.findById(userId);
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
   }
-
-  user.password = password;
+  if (user.isOAuth) {
+    return next(new ErrorHandler("User is unAuthorized", 403));
+  }
+  // compare password with hashed password
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) {
+    return next(new ErrorHandler("Invalid old password", 400));
+  }
+  // update password
+  user.password = newPassword;
   await user.save();
-
   return res.status(200).json({
     success: true,
     data: user,

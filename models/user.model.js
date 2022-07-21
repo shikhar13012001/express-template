@@ -4,13 +4,17 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+const bcrypt = require("bcrypt");
 const userSchema = new Schema(
   {
     caregiverFName: {
       type: String,
       minlength: [3, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
+    },
+    password:{
+      type: String,
+      minlength: [3, "Password must be at least 3 characters long"],
     },
     caregiverLName: {
       type: String,
@@ -42,9 +46,22 @@ const userSchema = new Schema(
     childDOB: {
       type: Date,
     },
+    isOAuth: {
+      type: Boolean,
+      default: false,
+    }
    },
   { timestamps: true, strict: false }
 );
+
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 8);
+  }
+  next();
+}
+);
+
 
 const User = mongoose.model("User", userSchema);
 
