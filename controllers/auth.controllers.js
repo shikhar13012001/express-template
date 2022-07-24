@@ -38,7 +38,7 @@ exports.login = CatchAsyncErrors(
  * @access public
  **/
 exports.register = CatchAsyncErrors(async (req, res, next) => {
-  const { email, password } = req.body.data;
+  const { email } = req.body.data;
 
   if (!email ) {
     return next(new ErrorHandler("Please enter your email", 400));
