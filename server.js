@@ -13,6 +13,7 @@ const contactRouter = require("./routers/contact.routes");
 const app = express();
 const connectToDb = require("./config/db");
 const cors = require("cors");
+const morgan = require("morgan");
 
 // uncaught exception
 process.on("uncaughtException", (error) => {
@@ -31,6 +32,7 @@ process.on("unhandledRejection", (error) => {
 });
 
 app.use(express.json());
+app.use(morgan("dev"));
 app.use(
   cors({
     origin: [/netlify\.app$/, /localhost:\d{4}$/],
