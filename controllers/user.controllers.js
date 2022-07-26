@@ -72,7 +72,7 @@ exports.updateProgress = CatchAsyncErrors(
       userId: userId,
       "progress.courseId": courseId,
     });
-    let progress=isProgress;
+    let progress = isProgress;
     if (!isProgress) {
       //update progress for that course and weeks
       progress = await Progress.findOneAndUpdate(
@@ -111,9 +111,6 @@ exports.updateProgress = CatchAsyncErrors(
       progress?.progress
         ?.filter((t) => t.courseId === courseId)[0]
         ?.videos?.filter((t) => t.week == week)[0]?.videosID?.length;
-    console.log(isFull);
-    console.log(progress);
-
     const newProgress = await Progress.findOneAndUpdate(
       {
         userId: userId,
@@ -170,7 +167,6 @@ exports.getProgress = CatchAsyncErrors(
   } // end of getProgress
 );
 
-
 /**
  * @desc   update-user-details
  * @route  PUT /api/v1/user/update-user-details
@@ -181,7 +177,7 @@ exports.getProgress = CatchAsyncErrors(
  * */
 exports.updateUserDetails = CatchAsyncErrors(
   async (req, res, next) => {
-    const { id } = req.params; 
+    const { id } = req.params;
     const user = await User.findById(id);
     if (!user) {
       return next(new ErrorHandler(404, "User not found"));
@@ -189,9 +185,9 @@ exports.updateUserDetails = CatchAsyncErrors(
     const updatedUser = await User.findByIdAndUpdate(
       id,
       {
-        ...req.body.data
+        ...req.body.data,
       },
-      { new: true,returnNewDocument: true }
+      { new: true, returnNewDocument: true }
     );
     return res.status(200).json({
       success: true,

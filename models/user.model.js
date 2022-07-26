@@ -9,17 +9,19 @@ const userSchema = new Schema(
   {
     caregiverFName: {
       type: String,
-      minlength: [3, "Name must be at least 3 characters long"],
+      minlength: [0, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
+      default: "",
     },
-    password:{
+    password: {
       type: String,
       minlength: [3, "Password must be at least 3 characters long"],
     },
     caregiverLName: {
       type: String,
-      minlength: [3, "Name must be at least 3 characters long"],
+      minlength: [0, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
+      default: "",
     },
     email: {
       type: String,
@@ -27,30 +29,35 @@ const userSchema = new Schema(
       minlength: [3, "Email must be at least 3 characters long"],
       maxlength: [255, "Email must be less than 255 characters long"],
       unique: true,
+      default: "",
     },
-  
+
     phoneNumber: {
       type: String,
+      default: "",
     },
     childFName: {
       type: String,
-      minlength: [3, "Name must be at least 3 characters long"],
+      minlength: [0, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
+      default: "",
     },
     childLName: {
       type: String,
 
-      minlength: [3, "Name must be at least 3 characters long"],
+      minlength: [0, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
+      default: "",
     },
     childDOB: {
       type: Date,
+      default: "",
     },
     isOAuth: {
       type: Boolean,
       default: false,
-    }
-   },
+    },
+  },
   { timestamps: true, strict: false }
 );
 
@@ -59,9 +66,7 @@ userSchema.pre("save", async function (next) {
     this.password = await bcrypt.hash(this.password, 8);
   }
   next();
-}
-);
-
+});
 
 const User = mongoose.model("User", userSchema);
 
