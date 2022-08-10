@@ -9,21 +9,24 @@ const CourseSchema = new Schema(
       type: String,
     },
 
-    videoLinks: {
-      type: [
-        {
-          week: {
-            type: Number,
-          },
-          videos: [
-            {
-              youtubeLink: String,
-              vimeoLink: String,
-            },
-          ],
+    contents: [
+      {
+        week: {
+          type: Number,
         },
-      ],
-    },
+        weekName: {
+          type: String,
+        },
+        list: [
+          {
+            index: Number,
+            videoTitle: String,
+            videoLink: String,
+            videoCode: String,
+          },
+        ],
+      },
+    ],
   },
   { timestamps: true, strict: false }
 );

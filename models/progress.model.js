@@ -6,21 +6,23 @@ const progressSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
-  progress: [{
-    courseId: {
-      type: String,
-    },
-    videos: [
-      {
-        accessable: {
-          type: Boolean,
-          default: false,
-        },
-        week: Number,
-        videosID: [{ videoId: String }],
+  progress: [
+    {
+      courseId: {
+        type: String,
       },
-    ],
-  }],
+      videos: [
+        {
+          week: Number,
+          videoCodes: [String],
+          isCompleted: {
+            type: Boolean,
+            default: false,
+          },
+        },
+      ],
+    },
+  ],
 });
 
 const Progress = mongoose.model("Progress", progressSchema);
