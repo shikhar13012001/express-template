@@ -44,7 +44,6 @@ const userSchema = new Schema(
     },
     childLName: {
       type: String,
-
       minlength: [0, "Name must be at least 3 characters long"],
       maxlength: [255, "Name must be less than 255 characters long"],
       default: "",

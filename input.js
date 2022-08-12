@@ -127,9 +127,11 @@ const videoLinks = [
 const course1 = {
   course: courseId[0].courseName,
   courseId: courseId[0].courseId,
-  videoLinks: videoLinks.map((videoLink, index) => {
+  contents: videoLinks.map((videoLink, index) => {
     return {
-      videos: [videoLink],
+      list: [{
+        index: index + 1,
+      }],
       week: 1 + index,
     };
   }),

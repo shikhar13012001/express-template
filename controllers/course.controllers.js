@@ -12,11 +12,11 @@ const Course = require("../models/course.model");
  * @route POST /api/v1/courses/create
  */
 exports.createCourse = CatchAsyncErrors(async (req, res) => {
-  const { course, courseId, videoLinks } = req.body.data;
+  const { course, courseId, contents } = req.body.data;
   const newCourse = await Course.create({
     course,
     courseId,
-    videoLinks,
+    contents,
   });
 
   return res.status(201).json({

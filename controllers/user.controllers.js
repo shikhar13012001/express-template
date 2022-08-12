@@ -63,7 +63,7 @@ exports.getUserDetails = CatchAsyncErrors(
  */
 
 exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
-  const { userId, courseId, week, videoCode } = req.body;
+  const { userId, courseId, week, videoCode } = req.body.data;
   // find total number of videos in week
   const course = await Course.findOne({ courseId: courseId });
   const totalVideo = course.contents.find((content) => content.week === week)
@@ -116,7 +116,6 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
     success: true,
     data: progress,
   });
- 
 });
 
 /**
@@ -132,16 +131,65 @@ exports.getProgress = CatchAsyncErrors(
     // check locked or unlocked status of course
     const course = await Course.find({});
     const courseIds = course.map((course) => course.courseId);
+    // get ratio of video watched to total videos in all week of all courses
+    const progressRatio = course.map((item) => {
+      const totalVideo = item.contents.reduce((acc, curr) => {
+        return acc + curr.list.length;
+      }, 0);
+      // get total videos watched in that week of that course from progress model
+      const totalWatched = progress.progress
+        .find((t) => t.courseId === item.courseId)
+        .videos.reduce((acc, curr) => {
+          return acc + curr.videoCodes.length;
+        }, 0);
+      return {
+        courseId: item.courseId,
+        ratio: totalWatched / totalVideo,
+      };
+    });
+
     const userProgress = {
       userId: userId,
       progress: courseIds.map((courseId) => {
-        const courseMap=course.filter((course)=>course.courseId===courseId)[0];
-
-      })
-        
+        const courseMap = course.filter(
+          (course) => course.courseId === courseId
+        )[0];
+        return {
+          courseId: courseId,
+          ratio: progressRatio.find((ratio) => ratio.courseId === courseId)
+            .ratio,
+          progress: courseMap.contents.map((content) => {
+            const p = progress.progress
+              .filter((course) => course.courseId === courseId)[0]
+              ?.videos?.filter((video) => video.week === content.week)[0];
+            // previous week progress
+            const pw = progress.progress
+              .filter((course) => course.courseId === courseId)[0]
+              ?.videos?.filter((video) => video.week === content.week - 1)[0];
+            return {
+              week: content.week,
+              weekName: content.weekName,
+              lists: content.list.map((list) => {
+                return {
+                  ...list._doc,
+                  isLocked:
+                    content.week === 1 ||
+                    p?.videoCodes.includes(list.videoCode) ||
+                    pw?.isCompleted
+                      ? false
+                      : true,
+                };
+              }),
+              isCompleted: p?.isCompleted ? true : false,
+            };
+          }),
+        };
+      }),
     };
-
-  
+    return res.status(200).json({
+      success: true,
+      data: userProgress,
+    });
   } // end of getProgress
 );
 
@@ -174,3 +222,4 @@ exports.updateUserDetails = CatchAsyncErrors(
   } // end of updateUserDetails
 );
 
+9;

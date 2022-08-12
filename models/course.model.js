@@ -23,6 +23,7 @@ const CourseSchema = new Schema(
             videoTitle: String,
             videoLink: String,
             videoCode: String,
+            videoDuration: String,
           },
         ],
       },
