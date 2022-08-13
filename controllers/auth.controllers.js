@@ -22,12 +22,14 @@ exports.login = CatchAsyncErrors(
     const user = await User.findOne({ email });
     if (!user) {
       return next(new ErrorHandler(400, "Invalid email"));
-    } 
-   
+    }
+    // get progress
+    const progress = await Progress.findOne({ userId: user._id });
+    const CourseIds = progress.progress.map((course) => course.courseId);
 
     res.status(200).json({
       success: true,
-      data: user,
+      data: { ...user._doc, bought: CourseIds },
     });
   } // end of login
 );
@@ -40,7 +42,7 @@ exports.login = CatchAsyncErrors(
 exports.register = CatchAsyncErrors(async (req, res, next) => {
   const { email } = req.body.data;
 
-  if (!email ) {
+  if (!email) {
     return next(new ErrorHandler("Please enter your email", 400));
   }
   // save user to database
@@ -80,7 +82,7 @@ exports.googleLogin = CatchAsyncErrors(async (req, res, next) => {
   }
   // save user to database
   const userSaved = await User.create({
-    email: email, 
+    email: email,
     ...FirebaseObj,
     isOAuth: true,
   });

@@ -51,9 +51,13 @@ exports.getCourses = CatchAsyncErrors(
  **/
 exports.getCourseDetails = CatchAsyncErrors(
   async (req, res, next) => {
+    // get course Id
+    const { id } = req.params;
+    // get course details
+    const course = await Course.findOne({ courseId: id });
     return res.status(200).json({
       success: true,
-      data: "Get Course Details Route Working 🚀",
+      data: course,
     });
   } // end of getCourseDetails
 );
