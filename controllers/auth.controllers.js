@@ -40,7 +40,7 @@ exports.login = CatchAsyncErrors(
 
     res.status(200).json({
       success: true,
-      data: { ...user._doc, bought: obj },
+      data: { ...user._doc, ...obj },
     });
   } // end of login
 );
