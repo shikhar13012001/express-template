@@ -26,10 +26,21 @@ exports.login = CatchAsyncErrors(
     // get progress
     const progress = await Progress.findOne({ userId: user._id });
     const CourseIds = progress.progress.map((course) => course.courseId);
+    // get courses
+    const courses = await Course.find({});
+    const obj={};
+    courses.forEach((course)=>{
+      if(CourseIds.includes(course.courseId)){
+        obj[course.course]=course.courseId;
+      }
+      else{
+        obj[course.course]=null;
+      }
+    })
 
     res.status(200).json({
       success: true,
-      data: { ...user._doc, bought: CourseIds },
+      data: { ...user._doc, bought: obj },
     });
   } // end of login
 );
