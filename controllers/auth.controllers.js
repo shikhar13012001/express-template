@@ -4,6 +4,28 @@ const User = require("../models/user.model");
 const Course = require("../models/course.model");
 const Progress = require("../models/progress.model");
 const bcrypt = require("bcrypt");
+
+const func=async (user)=>{
+  const CourseIds = user.bought;
+  // get courses
+  const courses = await Course.find({},{_id:0,courseId:1,course:1});
+  const obj = {};
+  courses.forEach((course) => {
+    if (CourseIds.includes(course.courseId)) {
+      obj[course.course] = course.courseId;
+    } else {
+      obj[course.course] = null;
+    }
+  });
+  return obj;
+}
+
+
+
+
+
+
+
 /**
  * @desc Login user
  * @param {Object} req - Express request object
@@ -24,19 +46,9 @@ exports.login = CatchAsyncErrors(
       return next(new ErrorHandler(400, "Invalid email"));
     }
     // get progress
-    const progress = await Progress.findOne({ userId: user._id });
-    const CourseIds = progress.progress.map((course) => course.courseId);
+   
     // get courses
-    const courses = await Course.find({});
-    const obj={};
-    courses.forEach((course)=>{
-      if(CourseIds.includes(course.courseId)){
-        obj[course.course]=course.courseId;
-      }
-      else{
-        obj[course.course]=null;
-      }
-    })
+   const obj=await func(user);
 
     res.status(200).json({
       success: true,
@@ -68,10 +80,13 @@ exports.register = CatchAsyncErrors(async (req, res, next) => {
     userId: userSaved._id,
     progress: [],
   });
+ 
+  // get courses
+     const obj = await func(userSaved);
 
   return res.status(200).json({
     success: true,
-    data: userSaved,
+    data: {...userSaved._doc, ...obj},
   });
 });
 

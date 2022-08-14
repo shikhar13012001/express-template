@@ -56,6 +56,7 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    bought:[String]
   },
   { timestamps: true, strict: false }
 );

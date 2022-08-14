@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const OrderSchema = new Schema(
   {
-     
     userId: { type: String, required: [true, "User ID is required"] },
     orderId: { type: String, required: [true, "Order ID is required"] },
     billingDetails: {
@@ -17,10 +16,11 @@ const OrderSchema = new Schema(
     },
     orderDetails: {
       course: { type: String },
+      courseId: { type: String },
       quantity: { type: Number },
       totalPrice: { type: Number },
     },
-    userDetails:{type: Schema.Types.ObjectId, ref: "User"}
+    userDetails: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true, strict: false }
 );

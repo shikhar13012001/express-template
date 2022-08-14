@@ -84,6 +84,21 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
       ],
     });
   } else {
+    // check if that week is present in progress model if not then add week to progress model in mongodb
+    if (
+      !progress.progress
+        .find((course) => course.courseId === courseId)
+        .videos.find((video) => video.week === week)
+    ) {
+      progress.progress
+        .find((course) => course.courseId === courseId)
+        .videos.push({
+          week: week,
+          videoCodes: [videoCode],
+          isCompleted: false,
+        });
+    }
+
     // if present then check if videoCode is present in progress model
     if (
       !progress.progress
