@@ -102,24 +102,15 @@ exports.createUserOrder = CatchAsyncErrors(
     });
     // create progress
     // push courseId in bought field in user model
-    await User.findByIdAndUpdate(
+   const UpdatedUser= await User.findByIdAndUpdate(
       userId,
       {
         $push: { bought: order.orderDetails.courseId },
       },
       { new: true, returnNewDocument: true }
     );
-    const CourseIds = user.bought;
-    // get courses
-    const courses = await Course.find({}, { _id: 0, courseId: 1, course: 1 });
-    const obj = {};
-    courses.forEach((course) => {
-      if (CourseIds.includes(course.courseId)) {
-        obj[course.course] = course.courseId;
-      } else {
-        obj[course.course] = null;
-      }
-    });
+   
+    const obj = await func(UpdatedUser);
     // add to notifications
     await Notifications.create({
       userId: userId,
