@@ -4,6 +4,22 @@ const Order = require("../models/order.model");
 const User = require("../models/user.model");
 const Notifications = require("../models/notification.model");
 const Course = require("../models/course.model");
+
+const func = async (user) => {
+  const CourseIds = user.bought;
+  // get courses
+  const courses = await Course.find({}, { _id: 0, courseId: 1, course: 1 });
+  const obj = {};
+  courses.forEach((course) => {
+    if (CourseIds.includes(course.courseId)) {
+      obj[course.course] = course.courseId;
+    } else {
+      obj[course.course] = null;
+    }
+  });
+  return obj;
+};
+
 /**
  * @desc   create new order
  * @route  POST /api/v1/order/create-order
@@ -21,9 +37,14 @@ exports.createOrder = CatchAsyncErrors(
       ...req.body.data,
     });
     //update user bought field in user model
-    await User.findByIdAndUpdate(userId, {
-      $push: { bought: order.orderDetails.courseId },
-    });
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: { bought: order.orderDetails.courseId },
+      },
+      { new: true, returnNewDocument: true }
+    );
+    const obj = await func(user);
     // add to notifications
     await Notifications.create({
       userId: userId,
@@ -35,7 +56,7 @@ exports.createOrder = CatchAsyncErrors(
 
     return res.status(200).json({
       success: true,
-      data: order,
+      data: { ...order._doc, ...obj },
     });
   } // end of createOrder
 );
@@ -81,9 +102,13 @@ exports.createUserOrder = CatchAsyncErrors(
     });
     // create progress
     // push courseId in bought field in user model
-    await User.findByIdAndUpdate(userId, {
-      $push: { bought: order.orderDetails.courseId },
-    });
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        $push: { bought: order.orderDetails.courseId },
+      },
+      { new: true, returnNewDocument: true }
+    );
     const CourseIds = user.bought;
     // get courses
     const courses = await Course.find({}, { _id: 0, courseId: 1, course: 1 });
