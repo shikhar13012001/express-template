@@ -62,10 +62,10 @@ exports.getCourseDetails = CatchAsyncErrors(
       }://${req.get("host")}/api/v1/user/get-progress/${userId}`
     );
     const data = await resp.json();
-    data.data.progress.filter((course) => course.courseId === courseId)[0];
+    const f=data.data.progress.filter((course) => course.courseId === courseId)[0];
     return res.status(200).json({
       success: true,
-      data: data.data.progress,
+      data:f,
     });
   } // end of getCourseDetails
 );
