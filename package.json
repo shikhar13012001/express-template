@@ -14,7 +14,7 @@
     "faker": "^5.5.3",
     "mongoose": "^6.4.3",
     "morgan": "^1.10.0",
-    "node-fetch": "^3.2.8"
+    "node-fetch": "^3.2.10"
   },
   "devDependencies": {
     "convert-excel-to-json": "^1.7.0",

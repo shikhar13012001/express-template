@@ -1,7 +1,8 @@
 const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const Course = require("../models/course.model");
-
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 /**
  * @description - Create a new course
  * @param {object} req - The request object
@@ -43,7 +44,7 @@ exports.getCourses = CatchAsyncErrors(
 
 /**
  * @desc   Get course details
- * @route  GET /api/v1/course/get-course-details/:id
+ * @route  GET /api/v1/course/get-course-details/:userId/:courseId
  * @access public
  * @returns {object}
  * @param {string} id
@@ -52,12 +53,19 @@ exports.getCourses = CatchAsyncErrors(
 exports.getCourseDetails = CatchAsyncErrors(
   async (req, res, next) => {
     // get course Id
-    const { id } = req.params;
+    const { courseId, userId } = req.params;
     // get course details
-    const course = await Course.findOne({ courseId: id });
+    const resp = await fetch(
+      `${
+        // get domain path from req object
+        req.protocol
+      }://${req.get("host")}/api/v1/user/get-progress/${userId}`
+    );
+    const data = await resp.json();
+    data.data.progress.filter((course) => course.courseId === courseId)[0];
     return res.status(200).json({
       success: true,
-      data: course,
+      data: data.data.progress,
     });
   } // end of getCourseDetails
 );

@@ -143,6 +143,7 @@ exports.getProgress = CatchAsyncErrors(
   async (req, res, next) => {
     const userId = req.params.id;
     const progress = await Progress.findOne({ userId: userId });
+
     // check locked or unlocked status of course
     const course = await Course.find({});
     const courseIds = course.map((course) => course.courseId);
@@ -154,7 +155,7 @@ exports.getProgress = CatchAsyncErrors(
       // get total videos watched in that week of that course from progress model
       const totalWatched = progress.progress
         .find((t) => t.courseId === item.courseId)
-        .videos.reduce((acc, curr) => {
+        ?.videos?.reduce((acc, curr) => {
           return acc + curr.videoCodes.length;
         }, 0);
       return {
@@ -175,12 +176,12 @@ exports.getProgress = CatchAsyncErrors(
             .ratio,
           progress: courseMap.contents.map((content) => {
             const p = progress.progress
-              .filter((course) => course.courseId === courseId)[0]
-              ?.videos?.filter((video) => video.week === content.week)[0];
+              ?.filter((course) => course.courseId === courseId)[0]?.videos?.filter((video) => video.week === content.week)[0];
+              
             // previous week progress
             const pw = progress.progress
-              .filter((course) => course.courseId === courseId)[0]
-              ?.videos?.filter((video) => video.week === content.week - 1)[0];
+              ?.filter((course) => course.courseId === courseId)[0]?.videos?.filter((video) => video.week === content.week - 1)[0];
+              
             return {
               week: content.week,
               weekName: content.weekName,
