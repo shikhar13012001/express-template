@@ -149,7 +149,7 @@ exports.getProgress = CatchAsyncErrors(
     const courseIds = course.map((course) => course.courseId);
     // get ratio of video watched to total videos in all week of all courses
     const progressRatio = course.map((item) => {
-      const totalVideo = item.contents.reduce((acc, curr) => {
+       const totalVideo = item.contents.reduce((acc, curr) => {
         return acc + curr.list.length;
       }, 0);
       // get total videos watched in that week of that course from progress model
