@@ -4,7 +4,7 @@ const Order = require("../models/order.model");
 const User = require("../models/user.model");
 const Notifications = require("../models/notification.model");
 const Course = require("../models/course.model");
-
+const Progress = require("../models/progress.model");
 const func = async (user) => {
   const CourseIds = user.bought;
   // get courses
@@ -100,6 +100,10 @@ exports.createUserOrder = CatchAsyncErrors(
       userId: userId,
       ...req.body.data,
     });
+     await Progress.create({
+       userId: userId,
+       progress: [],
+     });
     // create progress
     // push courseId in bought field in user model
    const UpdatedUser= await User.findByIdAndUpdate(
