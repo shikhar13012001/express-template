@@ -65,7 +65,7 @@ exports.getCourseDetails = CatchAsyncErrors(
     const f=data.data.progress.filter((course) => course.courseId === courseId)[0];
     return res.status(200).json({
       success: true,
-      data:f,
+      data: f.progress,
     });
   } // end of getCourseDetails
 );

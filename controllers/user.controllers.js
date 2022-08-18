@@ -143,13 +143,13 @@ exports.getProgress = CatchAsyncErrors(
   async (req, res, next) => {
     const userId = req.params.id;
     const progress = await Progress.findOne({ userId: userId });
-
+    const user = await User.findById(userId);
     // check locked or unlocked status of course
     const course = await Course.find({});
     const courseIds = course.map((course) => course.courseId);
     // get ratio of video watched to total videos in all week of all courses
     const progressRatio = course.map((item) => {
-       const totalVideo = item.contents.reduce((acc, curr) => {
+      const totalVideo = item.contents.reduce((acc, curr) => {
         return acc + curr.list.length;
       }, 0);
       // get total videos watched in that week of that course from progress model
@@ -170,18 +170,21 @@ exports.getProgress = CatchAsyncErrors(
         const courseMap = course.filter(
           (course) => course.courseId === courseId
         )[0];
+        const isBought = user.bought.find((course) => course === courseId);
         return {
           courseId: courseId,
           ratio: progressRatio.find((ratio) => ratio.courseId === courseId)
             .ratio,
           progress: courseMap.contents.map((content) => {
             const p = progress.progress
-              ?.filter((course) => course.courseId === courseId)[0]?.videos?.filter((video) => video.week === content.week)[0];
-              
+              ?.filter((course) => course.courseId === courseId)[0]
+              ?.videos?.filter((video) => video.week === content.week)[0];
+
             // previous week progress
-            const pw = progress.progress
-              ?.filter((course) => course.courseId === courseId)[0]?.videos?.filter((video) => video.week === content.week - 1)[0];
-              
+            const pw = p?.videos?.filter(
+              (video) => video.week === content.week - 1
+            )[0];
+
             return {
               week: content.week,
               weekName: content.weekName,
@@ -189,9 +192,10 @@ exports.getProgress = CatchAsyncErrors(
                 return {
                   ...list._doc,
                   isLocked:
-                    content.week === 1 ||
-                    p?.videoCodes.includes(list.videoCode) ||
-                    pw?.isCompleted
+                    // Boolean(isBought) &&
+                    (content.week === 1 ||
+                      p?.videoCodes.includes(list.videoCode) ||
+                      pw?.isCompleted)
                       ? false
                       : true,
                 };
