@@ -146,7 +146,9 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
       isnextWeek = 1;
     }
   }
-
+   const pwd = (progress.progress
+     .find((course) => course.courseId === courseId)
+     .videos.find((video) => video.week === week).isCompleted === true);
   return res.status(200).json({
     success: true,
     data: {
@@ -155,6 +157,7 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
       nextWeek: isnextWeek ? week + 1 : week,
       nextVideo: nextVideo,
       prevVideo: prevVideo.list[prevVideoIndex],
+      isNextWeekUnlockable: Boolean(pwd&&isnextWeek),
     },
   });
 });
