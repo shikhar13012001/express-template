@@ -143,12 +143,9 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
     );
     if (nextWeek) {
       nextVideo = nextWeek.list[0];
-      isnextWeek =1;
+      isnextWeek = 1;
     }
   }
-
-
-
 
   return res.status(200).json({
     success: true,
@@ -209,10 +206,10 @@ exports.getProgress = CatchAsyncErrors(
               ?.filter((course) => course.courseId === courseId)[0]
               ?.videos?.filter((video) => video.week === content.week)[0];
 
-            // previous week progress
-            const pw = p?.videos?.filter(
-              (video) => video.week === content.week - 1
-            )[0];
+            // previous week progress 
+            const pw = progress.progress
+              ?.filter((course) => course.courseId === courseId)[0]
+              ?.videos?.filter((video) => video.week === content.week - 1)[0];
 
             return {
               week: content.week,
@@ -222,11 +219,12 @@ exports.getProgress = CatchAsyncErrors(
                   ...list._doc,
                   isLocked:
                     // Boolean(isBought) &&
-                    (content.week === 1 ||
-                      p?.videoCodes.includes(list.videoCode) ||
-                      pw?.isCompleted)
+                    content.week === 1 ||
+                    p?.videoCodes.includes(list.videoCode) ||
+                    pw?.isCompleted
                       ? false
                       : true,
+                  isCompleted: Boolean(p?.videoCodes.includes(list.videoCode)),
                 };
               }),
               isCompleted: p?.isCompleted ? true : false,
