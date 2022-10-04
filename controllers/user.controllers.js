@@ -133,6 +133,7 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
   );
 
   let nextVideo = null;
+  let isnextWeek = 0;
   // check if next video is present if not, then check if next week is present and if present then send next video
   if (prevVideo.list[prevVideoIndex + 1]) {
     nextVideo = prevVideo.list[prevVideoIndex + 1];
@@ -142,6 +143,7 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
     );
     if (nextWeek) {
       nextVideo = nextWeek.list[0];
+      isnextWeek =1;
     }
   }
 
@@ -152,6 +154,8 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
     success: true,
     data: {
       isAvailable: nextVideo ? true : false,
+      prevWeek: week,
+      nextWeek: isnextWeek ? week + 1 : week,
       nextVideo: nextVideo,
       prevVideo: prevVideo.list[prevVideoIndex],
     },
