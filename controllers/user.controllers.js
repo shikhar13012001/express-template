@@ -127,9 +127,34 @@ exports.updateProgress = CatchAsyncErrors(async (req, res, next) => {
   }
   // save progress model
   await progress.save();
+  const prevVideo = course.contents.find((content) => content.week === week);
+  const prevVideoIndex = prevVideo.list.findIndex(
+    (video) => video.videoCode === videoCode
+  );
+
+  let nextVideo = null;
+  // check if next video is present if not, then check if next week is present and if present then send next video
+  if (prevVideo.list[prevVideoIndex + 1]) {
+    nextVideo = prevVideo.list[prevVideoIndex + 1];
+  } else {
+    const nextWeek = course.contents.find(
+      (content) => content.week === week + 1
+    );
+    if (nextWeek) {
+      nextVideo = nextWeek.list[0];
+    }
+  }
+
+
+
+
   return res.status(200).json({
     success: true,
-    data: progress,
+    data: {
+      isAvailable: nextVideo ? true : false,
+      nextVideo: nextVideo,
+      prevVideo: prevVideo.list[prevVideoIndex],
+    },
   });
 });
 
