@@ -12,7 +12,7 @@ const result = excelToJson({
     header: {
         rows: 1
     },
-  sheets: ["Home Course"],
+  sheets: ["Classroom"],
 
 });
 

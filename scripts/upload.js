@@ -5,63 +5,51 @@ const config = require("../config/courseid.js");
 const file = files.readFileSync(path.join(__dirname, "./file.json"));
 const result = JSON.parse(file);
 
-const arr = result["Home Course"];
- 
+const arr = result["Classroom"];
+
+const getVideoCode = (link) => {
+  const arr = link.split("/");
+  return arr[arr.length - 1];
+};
+
 const convertTime = (time) => {
   const [minutes, seconds] = time.split(":");
-  return time
+  return time;
 };
 // list
 let weekNum = 0;
 
 const list = () => {
-    const f=[]
-    for(let key=0; key<arr.length; key++)
-    {
+  const f = [];
+  for (let key = 0; key < arr.length; key++) {
     // keep adding items until next breathing exercise
-    const checkKey = "Breathing Exercise";
+
     const obj = {
-      week: weekNum + 1,
-      weekName: weekNum === 0 ? "Introduction" : "Week " + (1 + weekNum),
+      week: key==0?1:weekNum + 1,
+      weekName: key==0?"Introduction":"Week " + (1 + weekNum),
       list: [],
     };
     weekNum++;
     let ptr = 1;
-    while (arr[key].A !== checkKey) {
-      obj.list.push({
-        index: ptr++,
-        videoTitle: arr[key].F,
-        videoLink: arr[key].B,
-        videoCode: arr[key].D,
-        videoDuration: convertTime(arr[key].H),
-      }); 
-      key++;
-    }
-    if (arr[key].A === checkKey) {
-      obj.list.push({
-        index: ptr++,
-        videoTitle: arr[key].F,
-        videoLink: arr[key].B,
-        videoCode: arr[key].D,
-        videoDuration: convertTime(arr[key].H),
-      });
-  
 
-    }
+    obj.list.push({
+      index: ptr++,
+      videoTitle: arr[key].A,
+      videoLink: arr[key].B,
+      videoCode: getVideoCode(arr[key].B), // get video code from video link,
+      videoDuration: "1:00",
+    });
+   
+
     f.push(obj);
-
   }
-      return f;
-}
-
-
-
-
+  return f;
+};
 
 // course1
 const course1 = {
-  course: "Home Course",
-  courseId: "f80ade2b933b7cd499baadeb7a8aa11108d54dd7",
+  course: "Classroom",
+  courseId: "be45c8f0f4f7d92b7eaeb969088b6209e23b81b0",
   contents: list(),
 };
 
