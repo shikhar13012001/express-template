@@ -1,6 +1,9 @@
 const CatchAsyncErrors = require("../middlewares/CatchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const Course = require("../models/course.model");
+const changeNullToZero = (val) => {
+  return val === null ? 0 : val;
+};
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 /**
@@ -69,3 +72,27 @@ exports.getCourseDetails = CatchAsyncErrors(
     });
   } // end of getCourseDetails
 );
+
+
+/**
+ * @desc  get-watched-progess
+ * @route  GET /api/v1/course/get-watched-progess/:userId
+ * @access public
+ * @returns {object}
+ */
+
+exports.getWatchedProgess = CatchAsyncErrors(
+  async (req, res, next) => {
+    const { userId } = req.params;
+    const resp = await fetch(
+      `${
+        // get domain path from req object
+        req.protocol
+      }://${req.get("host")}/api/v1/user/get-progress/${userId}`
+    );
+    const data = await resp.json();
+    return res.status(200).json({
+      success: true,
+      data: data.data.progress.map((course) => course.ratio),
+    });
+  }) // end of getWatchedProgess

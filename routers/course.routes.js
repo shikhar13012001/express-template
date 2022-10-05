@@ -7,5 +7,8 @@ router.route("/get-courses").get(courseController.getCourses);
 router.route("/get-course-details/:userId/:courseId").get(courseController.getCourseDetails);
 // Create_course
 router.route("/create-course").post(courseController.createCourse);
-
+// Get watched progress
+router
+  .route("/get-watched-progess/:userId")
+  .get(courseController.getWatchedProgess);
 module.exports = router;

@@ -4,6 +4,10 @@ const User = require("../models/user.model");
 const Progress = require("../models/progress.model");
 const Notifications = require("../models/notification.model");
 const Course = require("../models/course.model");
+const changeNullToZero = (val) => {
+  const temp=Boolean(val);
+  return !temp? 0 : val;
+};
 /**
  * @desc   get-realtime-notifications
  * @route  GET /api/v1/user/get-realtime-notifications/:id?page=pageNumber
@@ -189,7 +193,9 @@ exports.getProgress = CatchAsyncErrors(
         }, 0);
       return {
         courseId: item.courseId,
-        ratio: totalWatched / totalVideo,
+        percent: Math.round(changeNullToZero(totalWatched / totalVideo) * 100),
+        totalVideo: totalVideo,
+        totalWatched: totalWatched || 0,
       };
     });
 
@@ -203,7 +209,7 @@ exports.getProgress = CatchAsyncErrors(
         return {
           courseId: courseId,
           ratio: progressRatio.find((ratio) => ratio.courseId === courseId)
-            .ratio,
+            ,
           progress: courseMap.contents.map((content) => {
             const p = progress.progress
               ?.filter((course) => course.courseId === courseId)[0]
@@ -272,4 +278,6 @@ exports.updateUserDetails = CatchAsyncErrors(
   } // end of updateUserDetails
 );
 
-9;
+
+
+ 
