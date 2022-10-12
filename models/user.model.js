@@ -49,7 +49,7 @@ const userSchema = new Schema(
       default: "",
     },
     childDOB: {
-      type: Date,
+      type: String,
       default: "",
     },
     isOAuth: {

@@ -11,6 +11,8 @@ router.route("/get-user-details/:id").get(userController.getUserDetails);
 router.route("/update-progress").post(userController.updateProgress);
 // Get_progress
 router.route("/get-progress/:id").get(userController.getProgress);
+// update_user_details
+router.route("/update-user-details/:id").post(userController.updateUserDetails);
 
 
 module.exports = router;
