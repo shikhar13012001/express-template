@@ -95,6 +95,8 @@ exports.createUserOrder = CatchAsyncErrors(
     //create user
     const user = await User.create(req.body.data.user);
     //get userId
+    const newUser = req.body.data.user;
+    delete req.body.data.user;
     const userId = user._id;
     const order = await Order.create({
       userId: userId,
@@ -125,7 +127,7 @@ exports.createUserOrder = CatchAsyncErrors(
     });
     return res.status(200).json({
       success: true,
-      data: { ...order._doc, ...obj },
+      data: { ...order._doc, ...obj,user:{...user._doc} },
     });
   } // end of createUserOrder
 );
